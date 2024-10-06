@@ -1,0 +1,391 @@
+openapi: 3.0.1
+info:
+  title: Todo-Tag Backend
+  version: 0.0.3
+servers:
+  - url: http://todo.thing.zone
+  - url: http://localhost:8080
+tags:
+  - name: todos
+  - name: tags
+paths:
+  /todos/:
+    get:
+      tags:
+        - todos
+      summary: Get the list of all todos
+      responses:
+        '200':
+          description: List of all todos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Todo'
+                    - type: object
+                      properties:
+                        tags:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/Tag'
+                          readOnly: true
+    post:
+      tags:
+        - todos
+      summary: Create a new todo
+      requestBody:
+        description: The todo to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Todo'
+      responses:
+        '201':
+          description: The created todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+    delete:
+      tags:
+        - todos
+      summary: Delete all todos
+      responses:
+        '204':
+          description: No content
+  /todos/{id}:
+    get:
+      tags:
+        - todos
+      summary: Get one one todo
+      parameters:
+        - name: id
+          in: path
+          description: The id of the todo
+          required: true
+          schema:
+            type: string
+          example: '42'
+      responses:
+        '200':
+          description: The requested Todo
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Todo'
+                  - type: object
+                    properties:
+                      tags:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Tag'
+                        readOnly: true
+    delete:
+      tags:
+        - todos
+      summary: Delete one todo
+      parameters:
+        - name: id
+          in: path
+          description: The id of the todo
+          required: true
+          schema:
+            type: string
+          example: '42'
+      responses:
+        '204':
+          description: No content
+    patch:
+      tags:
+        - todos
+      summary: Update an existing todo
+      parameters:
+        - name: id
+          in: path
+          description: The id of the todo
+          required: true
+          schema:
+            type: string
+          example: '42'
+      requestBody:
+        description: The todo to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Todo'
+      responses:
+        '200':
+          description: The updated todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+  /todos/{id}/tags/:
+    get:
+      tags:
+        - todos
+      summary: Get the list of tags associated with a todo
+      parameters:
+        - name: id
+          in: path
+          description: The id of the todo
+          required: true
+          schema:
+            type: string
+          example: '42'
+      responses:
+        '200':
+          description: The requested todo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+    post:
+      tags:
+        - todos
+      summary: Associate a tag with a todo
+      parameters:
+        - name: id
+          in: path
+          description: The id of the todo
+          required: true
+          schema:
+            type: string
+          example: '42'
+      requestBody:
+        description: The tag to associate
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  description: id of the tag
+                  type: string
+                  example: '42'
+      responses:
+        '204':
+          description: No content
+    delete:
+      tags:
+        - todos
+      summary: Delete all tags associated with a todo
+      parameters:
+        - name: id
+          in: path
+          description: The id of the todo
+          required: true
+          schema:
+            type: string
+          example: '42'
+      responses:
+        '204':
+          description: No content
+  /todos/{id}/tags/{tag_id}:
+    delete:
+      tags:
+        - todos
+      summary: Remove a tag from a todo
+      parameters:
+        - name: id
+          in: path
+          description: The id of the todo
+          required: true
+          schema:
+            type: string
+          example: '42'
+        - name: tag_id
+          in: path
+          description: The id of the tag
+          required: true
+          schema:
+            type: string
+          example: '42'
+      responses:
+        '204':
+          description: No content
+  /tags/:
+    get:
+      tags:
+        - tags
+      summary: Get the list of all tags
+      responses:
+        '200':
+          description: List of all tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Tag'
+                    - type: object
+                      properties:
+                        todos:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/Todo'
+                          readOnly: true
+    post:
+      tags:
+        - tags
+      summary: Create a new tag
+      requestBody:
+        description: The tag to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '201':
+          description: The created Tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+    delete:
+      tags:
+        - tags
+      summary: Delete the all tags
+      responses:
+        '204':
+          description: No content
+  /tags/{id}:
+    get:
+      tags:
+        - tags
+      summary: Get one tag
+      parameters:
+        - name: id
+          in: path
+          description: The id of the tag
+          required: true
+          schema:
+            type: string
+          example: '42'
+      responses:
+        '200':
+          description: The requested Tag
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Tag'
+                  - type: object
+                    properties:
+                      todos:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Todo'
+                        readOnly: true
+    delete:
+      tags:
+        - tags
+      summary: Delete one tag
+      parameters:
+        - name: id
+          in: path
+          description: The id of the tag
+          required: true
+          schema:
+            type: string
+          example: '42'
+      responses:
+        '204':
+          description: No content
+    patch:
+      tags:
+        - tags
+      summary: Update an existing tag
+      parameters:
+        - name: id
+          in: path
+          description: The id of the tag
+          required: true
+          schema:
+            type: string
+          example: '42'
+      requestBody:
+        description: The tag to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '200':
+          description: The updated Tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+  /tags/{id}/todos/:
+    get:
+      tags:
+        - tags
+      summary: Get the list of todos associated with a tag
+      parameters:
+        - name: id
+          in: path
+          description: The id of the tag
+          required: true
+          schema:
+            type: string
+          example: '42'
+      responses:
+        '200':
+          description: The requested Todo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+components:
+  schemas:
+    Todo:
+      description: Object representing a Todo
+      type: object
+      properties:
+        id:
+          description: id of the todo
+          type: string
+          example: '42'
+          readOnly: true
+        title:
+          description: title of the todo
+          type: string
+          example: My task
+        completed:
+          description: whether the todo is completed or not
+          type: boolean
+          example: false
+        url:
+          description: url associated with the todo
+          type: string
+          readOnly: true
+        order:
+          format: int32
+          description: order in the priority list
+          type: integer
+          example: 10
+    Tag:
+      description: Object representing a Tag
+      type: object
+      properties:
+        id:
+          description: id of the tag
+          type: string
+          example: '42'
+          readOnly: true
+        title:
+          description: title of the tag
+          type: string
+          example: Leisure
+        url:
+          description: url associated with the tag
+          type: string
+          readOnly: true
